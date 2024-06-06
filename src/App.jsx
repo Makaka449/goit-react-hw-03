@@ -1,84 +1,54 @@
-import { useState, useEffect } from "react";
+import React, { Component, useState, useEffect } from "react";
 import "./App.css";
+import ContactList from "./components/ContactList/ContactList";
+import SearchBox from "./components/Search/Search";
+import ContactForm from "./components/ContactForm/ContactForm";
+import initialContacts from "./components/Contact/Contact";
 
-import Description from "./components/description";
-import Options from "./components/options";
-import Feedback from "./components/feedback";
-import Notification from "./components/notification"
 
 
+const getStoredContacts = () => {
+  const StoredContacts = localStorage.getItem("contacts");
+  return StoredContacts ? JSON.parse(StoredContacts) : initialContacts;
+};
 
 function App() {
-  const [thought, setThought] = useState(() => {
-    const savedThought = window.localStorage.getItem("saved-thought");
-
-    if (savedThought !== null) {
-      return JSON.parse(savedThought);
-    }
-    return {
-      good: 0,
-      neutral: 0,
-      bad: 0,
-    };
-  });
+  const [contacts, setContacts] = useState(getStoredContacts);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    window.localStorage.setItem("saved-thought", JSON.stringify(thought));
-  }, [thought]);
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+  }, [contacts]);
 
-  const totalFeedback = thought.good + thought.neutral + thought.bad;
-  const PositiveFeedback = Math.round((thought.good / totalFeedback) * 100);
-
-  function updateFeedback(feedbackType) {
-    switch (feedbackType) {
-      case "good":
-        setThought({
-          ...thought,
-          good: thought.good + 1,
-        });
-        break;
-
-      case "neutral":
-        setThought({
-          ...thought,
-          neutral: thought.neutral + 1,
-        });
-        break;
-
-      case "bad":
-        setThought({
-          ...thought,
-          bad: thought.bad + 1,
-        });
-        break;
-    }
-  }
-
-  function resetState() {
-    setThought({
-      good: 0,
-      neutral: 0,
-      bad: 0,
+  const addContact = (newContact) => {
+    setContacts((prevContacts) => {
+      return [...prevContacts, newContact];
     });
-  }
+  };
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+  };
+
+  const handleDeleteContact = (contactId) => {
+    setContacts((prevContacts) =>
+      prevContacts.filter((contact) => contact.id !== contactId)
+    );
+  };
+
+  const filteredContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <>
-      <Description />
-      <Options
-        fun={updateFeedback}
-        cleaning={resetState}
-        amount={totalFeedback}
+    <div>
+      <h1 className="title">Phonebook</h1>
+      <ContactForm onSubmit={addContact} />
+      <SearchBox searchTerm={searchTerm} onSearchChange={handleSearch} />
+      <ContactList
+        contacts={filteredContacts}
+        onDeleteContact={handleDeleteContact}
       />
-      {totalFeedback == 0 && <Notification />}
-      {totalFeedback != 0 && (
-        <Feedback
-          obj={thought}
-          amount={totalFeedback}
-          statProc={PositiveFeedback}
-        />
-      )}
-    </>
+    </div>
   );
 }
 
