@@ -7,6 +7,7 @@ import ContactForm from "./components/ContactForm/ContactForm";
 
 
 
+
 const getStoredContacts = () => {
   const StoredContacts = localStorage.getItem("");
   return StoredContacts ? JSON.parse(StoredContacts) : [];
