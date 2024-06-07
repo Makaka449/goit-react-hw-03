@@ -3,13 +3,13 @@ import "./App.css";
 import ContactList from "./components/ContactList/ContactList";
 import SearchBox from "./components/Search/Search";
 import ContactForm from "./components/ContactForm/ContactForm";
-import initialContacts from "./components/Contact/Contact";
+
 
 
 
 const getStoredContacts = () => {
-  const StoredContacts = localStorage.getItem("contacts");
-  return StoredContacts ? JSON.parse(StoredContacts) : initialContacts;
+  const StoredContacts = localStorage.getItem("");
+  return StoredContacts ? JSON.parse(StoredContacts) : [];
 };
 
 function App() {
