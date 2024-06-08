@@ -1,10 +1,9 @@
 import React, { Component, useState, useEffect } from "react";
 import "./App.css";
 import ContactList from "./components/ContactList/ContactList";
-import SearchBox from "./components/Search/Search";
+import SearchBox from "./components/SearchBox/SearchBox";
 import ContactForm from "./components/ContactForm/ContactForm";
-
-
+import initialContacts from "./initialContacts.json";
 
 
 
